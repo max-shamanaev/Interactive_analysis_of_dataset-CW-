@@ -1,0 +1,25 @@
+1*male*29*China*cybersecurity specialist*8291,73
+2*male*36*Australia*database administrator*8768,12
+3*female*47*India*IT leadership*3587,4
+4*female*31*France*database administrator*8401,49
+5*female*36*France*database administrator*8936,46
+6*male*47*USA*IT leadership*1766,8
+7*male*20*Germany*IT leadership*3194,16
+8*male*24*Japan*cybersecurity specialist*2374,55
+9*female*33*USA*software developer*5436,75
+10*male*27*USA*software developer*9450,26
+11*female*24*China*software developer*1510,97
+12*female*18*Japan*software developer*7588,2
+13*male*46*France*cloud computing engineer*8672,63
+14*female*21*UK*IT analyst*1673,41
+15*female*43*UK*IT leadership*5793,81
+16*male*44*France*database administrator*1805,03
+17*male*50*France*cloud computing engineer*7913,14
+18*female*44*China*cybersecurity specialist*2829,62
+19*female*26*UK*cloud computing engineer*5834,82
+20*female*19*France*software developer*3410,29
+21*female*50*USA*cloud computing engineer*9292,93
+22*male*50*Japan*database administrator*5220,86
+23*male*45*UK*software developer*8309,27
+24*female*36*Australia*IT leadership*2109,28
+25*male*29*Germany*software developer*2848,04

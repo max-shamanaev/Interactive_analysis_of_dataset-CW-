@@ -1,0 +1,142 @@
+﻿<Window x:Class="MWindow.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MWindow"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="768" Width="1366"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <ResourceDictionary Source="MainResources.xaml" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Menu>
+            <MenuItem Header="File">
+                <MenuItem Header="Open..." Name="btnOpenFile" Click="btnOpenFile_Click"/>
+                <MenuItem Header="Create..." Name="btnCreateFile" Click="btnCreateFile_Click"/>
+                <Separator/>
+                <MenuItem Header="Exit" Name="btnExit" Click="btnExit_Click"/>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Font" Name="Change_Font" Click="Change_Font_Click"/>
+            </MenuItem>
+        </Menu>
+        
+        <TabControl Grid.Row="1" FontSize="14">
+            <TabItem Header="Input data">
+                <DataGrid Grid.Column="0" Name="RawDataGrid" ItemsSource="{Binding b_personsList}"
+                          AutoGenerateColumns="False" IsReadOnly="True"  Focusable="False"
+                          ColumnWidth="*"  RowBackground="WhiteSmoke" AlternatingRowBackground="White">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding b_id}" Width="Auto"/>
+                        <DataGridTextColumn Header="Sex" Binding="{Binding b_sex}"/>
+                        <DataGridTextColumn Header="Age" Binding="{Binding b_age}"/>
+                        <DataGridTextColumn Header="Location" Binding="{Binding b_location}"/>
+                        <DataGridTextColumn Header="Profession" Binding="{Binding b_profession}"/>
+                        <DataGridTextColumn Header="Salary, $" Binding="{Binding b_salary}"/>
+                    </DataGrid.Columns>
+
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open..."  Click="btnOpenFile_Click"/>
+                            <MenuItem Header="Create..." Click="btnCreateFile_Click"/>
+                            <MenuItem Header="Clear selected" Name="Clear_Selected" Click="Clear_Selected_Click"/>
+                            <Separator/>
+                            <MenuItem Header="Exit" Click="btnExit_Click"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="DataSpecs">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Open..." Click="btnOpenFile_Click"/>
+                                <MenuItem Header="Create..." Click="btnCreateFile_Click"/>
+                                <MenuItem Header="Clear selected" Name="DSpecs_Clear_Selected" Click="DSpecs_Clear_Selected_Click"/>
+                                <MenuItem Header="Clear chart" Click="cmClearChart"/>
+                                <Separator/>
+                                <MenuItem Header="Exit" Click="btnExit_Click"/>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+
+                        <Border CornerRadius="5">
+                            <DataGrid Grid.Row="0" Name="DataSpecsGrid" ItemsSource="{Binding}"
+                                      AutoGenerateColumns="False" IsReadOnly="True" ColumnWidth="*" CanUserSortColumns="False" 
+                                      VerticalGridLinesBrush="White" HorizontalGridLinesBrush="White" RowBackground="White" >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Amount of IDs" Binding="{Binding b_idsAmount}"/>
+                                    <DataGridTextColumn Header="Amount of specs" Binding="{Binding b_specsAmount}"/>
+                                    <DataGridTextColumn Header="Average age" Binding="{Binding b_avgAge}"/>
+                                    <DataGridTextColumn Header="Average salary, $" Binding="{Binding b_avgSalary}"/>
+                                    <DataGridTextColumn Header="Max age" Binding="{Binding b_maxAge}"/>
+                                    <DataGridTextColumn Header="Max salary, $" Binding="{Binding b_maxSalary}"/>
+                                    <DataGridTextColumn Header="Min age" Binding="{Binding b_minAge}"/>
+                                    <DataGridTextColumn Header="Min salary" Binding="{Binding b_minSalary}"/>
+                                    <DataGridTextColumn Header="Amount of 0" Binding="{Binding b_zerosAmount}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                        
+                        <DockPanel Grid.Row="1" VerticalAlignment="Top">
+                            <GroupBox Header="Charts">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                            <Button Grid.Column="0" Name="Draw_salary_to_location_chart" 
+                                                Content="Average salary per location" Click="DrawChart"/>
+                                            <Button Grid.Column="1" Name="Draw_salary_to_profession_chart" 
+                                                Content="Average salary per profession" Click="DrawChart"/>
+                                            <Button Grid.Column="2" Name="Draw_salary_to_gender_chart" 
+                                                Content="Average salary per gender" Click="DrawChart"/>
+                                            <Button Grid.Column="3" Name="Draw_age_to_profession_chart" 
+                                                Content="Average age per profession" Click="DrawChart"/>
+                                    </Grid>
+
+                                    <Button Grid.Row="1" Content="Clear" Click="DrawChart" Width="500"/>
+                                </Grid>
+                            </GroupBox>
+                        </DockPanel>
+                    
+                        <lvc:CartesianChart Name="ColumnChart" Series="{Binding SeriesCollection}" Grid.Row="2"
+                                            LegendLocation="Left" Margin="10">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Labels="{Binding Labels}"></lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Title="{Binding Title}" LabelFormatter="{Binding Formatter}"></lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                        </lvc:CartesianChart>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

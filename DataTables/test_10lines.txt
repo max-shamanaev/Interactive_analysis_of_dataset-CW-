@@ -1,0 +1,10 @@
+1*male*51*China*IT analyst*7597,34
+2*female*26*France*cloud computing engineer*2729,93
+3*female*18*UK*IT analyst*3285,64
+4*male*55*Japan*cybersecurity specialist*3808,46
+5*male*68*China*database administrator*1978,94
+6*female*50*India*IT analyst*9965,05
+7*female*69*Australia*IT analyst*5255,96
+8*female*19*UK*cybersecurity specialist*9195,07
+9*male*70*UK*cloud computing engineer*3803,46
+10*female*60*Germany*software developer*6155,78
