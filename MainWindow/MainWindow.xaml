@@ -79,7 +79,7 @@
                         <Border CornerRadius="5">
                             <DataGrid Grid.Row="0" Name="DataSpecsGrid" ItemsSource="{Binding}"
                                       AutoGenerateColumns="False" IsReadOnly="True" ColumnWidth="*" CanUserSortColumns="False" 
-                                      VerticalGridLinesBrush="White" HorizontalGridLinesBrush="White" RowBackground="White" >
+                                      VerticalGridLinesBrush="White" HorizontalGridLinesBrush="White" RowBackground="White">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Amount of IDs" Binding="{Binding b_idsAmount}"/>
                                     <DataGridTextColumn Header="Amount of specs" Binding="{Binding b_specsAmount}"/>

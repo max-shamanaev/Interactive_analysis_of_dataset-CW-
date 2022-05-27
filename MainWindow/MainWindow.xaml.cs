@@ -155,12 +155,12 @@ namespace MWindow
 
         private void Clear_Selected_Click(object sender, RoutedEventArgs e)
         {
-            RawDataGrid.SelectedItems.Clear();
+            RawDataGrid.UnselectAllCells();
         }
 
         private void DSpecs_Clear_Selected_Click(object sender, RoutedEventArgs e)
         {
-            DataSpecsGrid.SelectedItems.Clear();
+            DataSpecsGrid.UnselectAllCells();
         }
     }
 }

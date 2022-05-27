@@ -3,6 +3,14 @@
 
     <Style TargetType="DataGridCell">
         <Setter Property="ItemsControl.FontSize" Value="16"/>
+        <Style.Triggers>
+            <Trigger Property="DataGridCell.IsSelected" Value="True">
+                <Setter Property="Background" Value="#CCDAFF"/>
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+                <Setter Property="BorderThickness" Value="0"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="DataGridColumnHeader">
