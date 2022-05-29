@@ -1,8 +1,18 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Name="MainStyles">
+
+    <Style TargetType="DataGrid">
+        <Setter Property="BorderBrush" Value="SlateGray"/>
+        <Setter Property="Margin" Value="3"/>
+    </Style>
 
     <Style TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="ItemsControl.FontSize" Value="16"/>
+        <Setter Property="Margin" Value="0,0,-1,0"/>
+    
         <Style.Triggers>
             <Trigger Property="DataGridCell.IsSelected" Value="True">
                 <Setter Property="Background" Value="#CCDAFF"/>
@@ -20,6 +30,34 @@
     </Style>
 
     <Style TargetType="Button">
-        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="SlateGray" BorderThickness="1">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="ItemsControl.FontSize" Value="16"/>
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="Background" Value="WhiteSmoke"/>
+        <Setter Property="Height" Value="30"/>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#CCDAFF"/>
+                <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" Value="DarkGray"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="DarkGray"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

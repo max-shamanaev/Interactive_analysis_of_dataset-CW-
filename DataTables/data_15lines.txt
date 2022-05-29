@@ -1,0 +1,15 @@
+1*female*46*Germany*IT analyst*4371,81
+2*female*24*Australia*software developer*8386,79
+3*female*37*India*database administrator*1216
+4*female*36*Australia*software developer*1397,24
+5*female*49*Japan*IT analyst*8584,49
+6*male*50*Germany*software developer*7958,27
+7*female*19*UK*cybersecurity specialist*9715,74
+8*female*24*France*database administrator*4931,51
+9*male*41*China*IT analyst*6947,17
+10*male*36*Japan*database administrator*8245,42
+11*female*18*UK*database administrator*9052,83
+12*female*41*Japan*IT leadership*3494,97
+13*female*30*Australia*cloud computing engineer*6982,85
+14*male*41*USA*software developer*4620,15
+15*female*43*Germany*database administrator*9749,21

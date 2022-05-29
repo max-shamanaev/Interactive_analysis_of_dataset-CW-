@@ -16,6 +16,7 @@ using Data;
 using DataBindings;
 using ColumnCharts;
 
+using Forms = System.Windows.Forms;
 
 namespace MWindow
 {
@@ -29,48 +30,74 @@ namespace MWindow
         private int lines = 50;
         private List<Person> rawdata = new List<Person>();
 
+        private BasicColumn columnChart = new BasicColumn();
+        private Brush chartBrush = Brushes.LightBlue;
+
+        private Brush defRowBackg = Brushes.WhiteSmoke;
+        private Brush defRowAltBackg = Brushes.White;
+
+        public bool isDSpecsGridVisible = true;
+        public bool isButtonsVisible = true;
+        public bool isChartVisible = true;
+
         public MainWindow()
         {
             InitializeComponent();
-       
+
+            ChangeDSpecsGridVisibility.IsChecked = isDSpecsGridVisible;
+            ChangeButtonsVisibility.IsChecked = isButtonsVisible;
+            ChangeChartVisibility.IsChecked = isChartVisible;
         }
 
         private void DrawChart(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
 
-            switch (button.Name)
+            if (rawdata.Count != 0)
             {
-                case "Draw_salary_to_location_chart":
-                    {
-                        ColumnChart.DataContext = new BasicColumn("Salary, $", DataSpecs.AvgSalaryPerLocation(rawdata));
-                        break;
-                    }
-                case "Draw_salary_to_profession_chart":
-                    {
-                        ColumnChart.DataContext = new BasicColumn("Salary, $", DataSpecs.AvgSalaryPerProfession(rawdata));
-                        break;
-                    }
-                case "Draw_salary_to_gender_chart":
-                    {
-                        ColumnChart.DataContext = new BasicColumn("Salary, $", DataSpecs.AvgSalaryPerGender(rawdata));
-                        break;
-                    }
-                case "Draw_age_to_profession_chart":
-                    {
-                        ColumnChart.DataContext = new BasicColumn("Age", DataSpecs.AvgAgePerProfession(rawdata));
-                        break;
-                    }
-                default:
-                    {
-                        ColumnChart.DataContext = new BasicColumn();
-                        break;
-                    }
+                switch (button.Name)
+                {
+                    case "Draw_salary_to_location_chart":
+                        {
+                            columnChart = new BasicColumn("Salary, $", DataSpecs.AvgSalaryPerLocation(rawdata), chartBrush);
+                            ColumnChart.DataContext = columnChart;
+                            break;
+                        }
+                    case "Draw_salary_to_profession_chart":
+                        {
+                            columnChart = new BasicColumn("Salary, $", DataSpecs.AvgSalaryPerProfession(rawdata), chartBrush);
+                            ColumnChart.DataContext = columnChart;
+                            break;
+                        }
+                    case "Draw_salary_to_gender_chart":
+                        {
+                            columnChart = new BasicColumn("Salary, $", DataSpecs.AvgSalaryPerGender(rawdata), chartBrush);
+                            ColumnChart.DataContext = columnChart;
+                            break;
+                        }
+                    case "Draw_age_to_profession_chart":
+                        {
+                            columnChart = new BasicColumn("Age", DataSpecs.AvgAgePerProfession(rawdata), chartBrush);
+                            ColumnChart.DataContext = columnChart;
+                            break;
+                        }
+                    default:
+                        {
+                            ColumnChart.DataContext = new BasicColumn();
+                            btnAux.Focus();
+                            break;
+                        }
+                }       
+            }
+            else
+            {
+                btnAux.Focus();
             }
         }
         private void cmClearChart(object sender, RoutedEventArgs e)
         {
             ColumnChart.DataContext = new BasicColumn();
+            btnAux.Focus();
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)
@@ -124,7 +151,7 @@ namespace MWindow
                 saveDlg.Filter = "Text documents (.txt)|*.txt";
                 bool? res2 = saveDlg.ShowDialog();
 
-                if (res1 == true && res2 == true)
+                if (res2 == true)
                 {
                     RawData rd = new RawData();
 
@@ -148,19 +175,211 @@ namespace MWindow
             }
         }
 
-        private void Change_Font_Click(object sender, RoutedEventArgs e)
+        private void Specs_Clear_Selected_Click(object sender, RoutedEventArgs e)
         {
-
+            DataSpecsGrid.UnselectAllCells();
         }
 
-        private void Clear_Selected_Click(object sender, RoutedEventArgs e)
+        private void Input_Clear_Selected_Click(object sender, RoutedEventArgs e)
         {
             RawDataGrid.UnselectAllCells();
         }
 
-        private void DSpecs_Clear_Selected_Click(object sender, RoutedEventArgs e)
+        public static IEnumerable<T> FindVisualChilds<T>(DependencyObject depObj) where T : DependencyObject
         {
-            DataSpecsGrid.UnselectAllCells();
+            if (depObj == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
+                if (ithChild == null) continue;
+                if (ithChild is T t) yield return t;
+                foreach (T childOfChild in FindVisualChilds<T>(ithChild)) yield return childOfChild;
+            }
+        }
+        private void Change_Chart_Fill_Click(object sender, RoutedEventArgs e)
+        {
+            var clrDlg = new Forms.ColorDialog();
+            clrDlg.Color = System.Drawing.Color.LightBlue;
+            clrDlg.FullOpen = true;
+
+            if(clrDlg.ShowDialog() == Forms.DialogResult.OK)
+            {
+                System.Drawing.Color dColor = clrDlg.Color;
+                System.Windows.Media.Color mColor = System.Windows.Media.Color.FromArgb(dColor.A, dColor.R, dColor.G, dColor.B);
+
+                chartBrush = new SolidColorBrush(mColor);
+                foreach (Button btn in FindVisualChilds<Button>(btnGrid))
+                {
+                    if (btn.IsFocused == true)
+                    {
+                        DrawChart(btn, null);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void ChangeDGridCellsForeg_Click(object sender, RoutedEventArgs e)
+        {
+            var clrDlg = new Forms.ColorDialog();
+            clrDlg.Color = System.Drawing.Color.Black;
+            clrDlg.FullOpen = true;
+
+            string menuItemName = ((MenuItem)sender).Name;
+
+            if (clrDlg.ShowDialog() == Forms.DialogResult.OK)
+            {
+                System.Drawing.Color dColor = clrDlg.Color;
+                System.Windows.Media.Color mColor = System.Windows.Media.Color.FromArgb(dColor.A, dColor.R, dColor.G, dColor.B);
+
+                switch (menuItemName)
+                {
+                    case "ChangeDGridCellsForeg":
+                        {
+                            RawDataGrid.Foreground = new SolidColorBrush(mColor);
+                            DataSpecsGrid.Foreground = new SolidColorBrush(mColor);
+                            break;
+                        }
+                    case "RawDataGridChangeForeg":
+                        {
+                            RawDataGrid.Foreground = new SolidColorBrush(mColor);
+                            break;
+                        }
+                    case "DataSpecsChangeForeg":
+                        {
+                            DataSpecsGrid.Foreground = new SolidColorBrush(mColor);
+                            break;
+                        }
+                }
+            }
+        }
+
+        private void ChangeDGridCellsBackg_Click(object sender, RoutedEventArgs e)
+        {
+            var clrDlg = new Forms.ColorDialog();
+            clrDlg.FullOpen = true;
+
+            string menuItemName = ((MenuItem)sender).Name;
+
+            if (clrDlg.ShowDialog() == Forms.DialogResult.OK)
+            {
+                System.Drawing.Color dColor = clrDlg.Color;
+                System.Windows.Media.Color mColor = System.Windows.Media.Color.FromArgb(dColor.A, dColor.R, dColor.G, dColor.B);
+
+                switch (menuItemName)
+                {
+                    case "ChangeDGridCellsBackg":
+                        {
+                            RawDataGrid.RowBackground = new SolidColorBrush(mColor);
+                            RawDataGrid.AlternatingRowBackground = null;
+                            RawDataGrid.GridLinesVisibility = DataGridGridLinesVisibility.None;
+
+                            DataSpecsGrid.RowBackground = new SolidColorBrush(mColor);
+                            DataSpecsGrid.GridLinesVisibility = DataGridGridLinesVisibility.None;
+                            break;
+                        }
+                    case "RawDataGridChangeBackg":
+                        {
+                            RawDataGrid.RowBackground = new SolidColorBrush(mColor);
+                            RawDataGrid.AlternatingRowBackground = null;
+                            RawDataGrid.GridLinesVisibility = DataGridGridLinesVisibility.None;
+                            break;
+                        }
+                    case "DataSpecsGridChangeBackg":
+                        {
+                            DataSpecsGrid.RowBackground = new SolidColorBrush(mColor);
+                            DataSpecsGrid.GridLinesVisibility = DataGridGridLinesVisibility.None;
+                            break;
+                        }
+                }
+            }
+        }
+
+        private void ChangeDSpecsGridVisibility_Click(object sender, RoutedEventArgs e)
+        {
+            if (isDSpecsGridVisible)
+            {
+                isDSpecsGridVisible = false;
+                DataSpecsGrid.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                isDSpecsGridVisible = true;
+                DataSpecsGrid.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void ChangeButtonsVisibility_Click(object sender, RoutedEventArgs e)
+        {
+            if (isButtonsVisible)
+            {
+                isButtonsVisible = false;
+                btnsPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                isButtonsVisible = true;
+                btnsPanel.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void ChangeChartVisibility_Click(object sender, RoutedEventArgs e)
+        {
+            if (isChartVisible)
+            {
+                isChartVisible = false;
+                ColumnChart.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                isChartVisible = true;
+                ColumnChart.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void DefaultDGridCellsBackg_Click(object sender, RoutedEventArgs e)
+        {
+            RawDataGrid.RowBackground = defRowBackg;
+            RawDataGrid.AlternatingRowBackground = defRowAltBackg;
+            RawDataGrid.GridLinesVisibility = DataGridGridLinesVisibility.All;
+
+            DataSpecsGrid.RowBackground = defRowAltBackg;
+            DataSpecsGrid.GridLinesVisibility = DataGridGridLinesVisibility.All;
+        }
+
+        private void DefaultDGridCellsForeg_Click(object sender, RoutedEventArgs e)
+        {
+            RawDataGrid.Foreground = Brushes.Black;
+            DataSpecsGrid.Foreground = Brushes.Black;
+        }
+
+        private void SetDefaultColors_Click(object sender, RoutedEventArgs e)
+        {
+            if (((MenuItem)sender).Name == "RawDataGridDefaultColors")
+            {
+                RawDataGrid.RowBackground = defRowBackg;
+                RawDataGrid.AlternatingRowBackground = defRowAltBackg;
+                RawDataGrid.GridLinesVisibility = DataGridGridLinesVisibility.All;
+                RawDataGrid.Foreground = Brushes.Black;
+            }
+            else if (((MenuItem)sender).Name == "DataSpecsGridDefaultColors")
+            {
+                DataSpecsGrid.RowBackground = defRowAltBackg;
+                DataSpecsGrid.GridLinesVisibility = DataGridGridLinesVisibility.All;
+                DataSpecsGrid.Foreground = Brushes.Black;
+            }
+            else
+            {
+                chartBrush = Brushes.LightBlue;
+                foreach (Button btn in FindVisualChilds<Button>(btnGrid))
+                {
+                    if (btn.IsFocused == true)
+                    {
+                        DrawChart(btn, null);
+                        break;
+                    }
+                }
+            }
         }
     }
 }

@@ -6,35 +6,63 @@
         xmlns:local="clr-namespace:MWindow"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1366"
+        Title="Interactive analysis of a dataset" Height="768" Width="1366"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <ResourceDictionary Source="MainResources.xaml" />
+        <ResourceDictionary Source="MainResources.xaml"/>
     </Window.Resources>
 
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Open..." Click="btnOpenFile_Click"/>
+            <MenuItem Header="Create..." Click="btnCreateFile_Click"/>
+        </ContextMenu>
+    </Window.ContextMenu>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Menu>
+        <Menu Background="White" Margin="0,0,0,5">
             <MenuItem Header="File">
                 <MenuItem Header="Open..." Name="btnOpenFile" Click="btnOpenFile_Click"/>
                 <MenuItem Header="Create..." Name="btnCreateFile" Click="btnCreateFile_Click"/>
                 <Separator/>
                 <MenuItem Header="Exit" Name="btnExit" Click="btnExit_Click"/>
             </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Header="Font" Name="Change_Font" Click="Change_Font_Click"/>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Copy" Command="ApplicationCommands.Copy"/>
+                <Separator/>
+                <MenuItem Header="Chart color">
+                    <MenuItem Header="Change color..." Click="Change_Chart_Fill_Click"/>
+                    <MenuItem Header="Default color" Click="SetDefaultColors_Click"/>
+                </MenuItem>
+                <MenuItem Header="Table foreground">
+                    <MenuItem Header="Change color..." Name="ChangeDGridCellsForeg" Click="ChangeDGridCellsForeg_Click"/>
+                    <MenuItem Header="Default colors" Name="DefaultDGridCellsForeg" Click="DefaultDGridCellsForeg_Click"/>
+                </MenuItem>
+                <MenuItem Header="Cells background">
+                    <MenuItem Header="Change color..." Name="ChangeDGridCellsBackg" Click="ChangeDGridCellsBackg_Click"/>
+                    <MenuItem Header="Default colors" Name="DefaultDGridCellsBackg" Click="DefaultDGridCellsBackg_Click"/>
+                </MenuItem>
+                <MenuItem Header="DataSpecs tab content">
+                    <MenuItem Header="Data specs table" Name="ChangeDSpecsGridVisibility" IsCheckable="True" StaysOpenOnClick="True"
+                              Click="ChangeDSpecsGridVisibility_Click" VerticalContentAlignment="Center"/>
+                    <MenuItem Header="Buttons" Name="ChangeButtonsVisibility" IsCheckable="True" StaysOpenOnClick="True"
+                              Click="ChangeButtonsVisibility_Click" VerticalContentAlignment="Center"/>
+                    <MenuItem Header="Chart" Name="ChangeChartVisibility" IsCheckable="True" StaysOpenOnClick="True"
+                              Click="ChangeChartVisibility_Click" VerticalContentAlignment="Center"/>
+                </MenuItem>
             </MenuItem>
         </Menu>
         
         <TabControl Grid.Row="1" FontSize="14">
             <TabItem Header="Input data">
                 <DataGrid Grid.Column="0" Name="RawDataGrid" ItemsSource="{Binding b_personsList}"
-                          AutoGenerateColumns="False" IsReadOnly="True"  Focusable="False"
+                          AutoGenerateColumns="False" IsReadOnly="True"  Focusable="False" HorizontalScrollBarVisibility="Disabled"
                           ColumnWidth="*"  RowBackground="WhiteSmoke" AlternatingRowBackground="White">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding b_id}" Width="Auto"/>
@@ -47,15 +75,20 @@
 
                     <DataGrid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Open..."  Click="btnOpenFile_Click"/>
+                            <MenuItem Header="Open..." Click="btnOpenFile_Click"/>
                             <MenuItem Header="Create..." Click="btnCreateFile_Click"/>
-                            <MenuItem Header="Clear selected" Name="Clear_Selected" Click="Clear_Selected_Click"/>
                             <Separator/>
-                            <MenuItem Header="Exit" Click="btnExit_Click"/>
+                            <MenuItem Header="Copy" Command="ApplicationCommands.Copy"/>
+                            <MenuItem Header="Clear selected" Name="Input_Clear_Selected" Click="Input_Clear_Selected_Click"/>
+                            <Separator/>
+                            <MenuItem Header="Change table's foreground..." Name="RawDataGridChangeForeg" Click="ChangeDGridCellsForeg_Click"/>
+                            <MenuItem Header="Change cells' background..."  Name="RawDataGridChangeBackg" Click="ChangeDGridCellsBackg_Click"/>
+                            <MenuItem Header="Set default colors" Name="RawDataGridDefaultColors"  Click="SetDefaultColors_Click"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                 </DataGrid>
             </TabItem>
+
             <TabItem Header="DataSpecs">
                 <TabItem.Content>
                     <Grid>
@@ -64,45 +97,50 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        
-                        <Grid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Open..." Click="btnOpenFile_Click"/>
-                                <MenuItem Header="Create..." Click="btnCreateFile_Click"/>
-                                <MenuItem Header="Clear selected" Name="DSpecs_Clear_Selected" Click="DSpecs_Clear_Selected_Click"/>
-                                <MenuItem Header="Clear chart" Click="cmClearChart"/>
-                                <Separator/>
-                                <MenuItem Header="Exit" Click="btnExit_Click"/>
-                            </ContextMenu>
-                        </Grid.ContextMenu>
 
-                        <Border CornerRadius="5">
-                            <DataGrid Grid.Row="0" Name="DataSpecsGrid" ItemsSource="{Binding}"
+                        <DataGrid Grid.Row="0" Name="DataSpecsGrid" ItemsSource="{Binding}" HorizontalScrollBarVisibility="Disabled"
                                       AutoGenerateColumns="False" IsReadOnly="True" ColumnWidth="*" CanUserSortColumns="False" 
                                       VerticalGridLinesBrush="White" HorizontalGridLinesBrush="White" RowBackground="White">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Amount of IDs" Binding="{Binding b_idsAmount}"/>
-                                    <DataGridTextColumn Header="Amount of specs" Binding="{Binding b_specsAmount}"/>
-                                    <DataGridTextColumn Header="Average age" Binding="{Binding b_avgAge}"/>
-                                    <DataGridTextColumn Header="Average salary, $" Binding="{Binding b_avgSalary}"/>
-                                    <DataGridTextColumn Header="Max age" Binding="{Binding b_maxAge}"/>
-                                    <DataGridTextColumn Header="Max salary, $" Binding="{Binding b_maxSalary}"/>
-                                    <DataGridTextColumn Header="Min age" Binding="{Binding b_minAge}"/>
-                                    <DataGridTextColumn Header="Min salary" Binding="{Binding b_minSalary}"/>
-                                    <DataGridTextColumn Header="Amount of 0" Binding="{Binding b_zerosAmount}"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </Border>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Amount of IDs" Binding="{Binding b_idsAmount}"/>
+                                <DataGridTextColumn Header="Amount of specs" Binding="{Binding b_specsAmount}"/>
+                                <DataGridTextColumn Header="Average age" Binding="{Binding b_avgAge}"/>
+                                <DataGridTextColumn Header="Average salary, $" Binding="{Binding b_avgSalary}"/>
+                                <DataGridTextColumn Header="Max age" Binding="{Binding b_maxAge}"/>
+                                <DataGridTextColumn Header="Max salary, $" Binding="{Binding b_maxSalary}"/>
+                                <DataGridTextColumn Header="Min age" Binding="{Binding b_minAge}"/>
+                                <DataGridTextColumn Header="Min salary" Binding="{Binding b_minSalary}"/>
+                                <DataGridTextColumn Header="Amount of 0s" Binding="{Binding b_zerosAmount}"/>
+                            </DataGrid.Columns>
+
+                            <DataGrid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open..." Click="btnOpenFile_Click"/>
+                                    <MenuItem Header="Create..." Click="btnCreateFile_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="Copy" Command="ApplicationCommands.Copy"/>
+                                    <MenuItem Header="Clear selected" Name="Specs_Clear_Selected" Click="Specs_Clear_Selected_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="Change table's foreground..." Name="DataSpecsChangeForeg" Click="ChangeDGridCellsForeg_Click"/>
+                                    <MenuItem Header="Change cells' background..." Name="DataSpecsGridChangeBackg" Click="ChangeDGridCellsBackg_Click"/>
+                                    <MenuItem Header="Set default colors" Name="DataSpecsGridDefaultColors" Click="SetDefaultColors_Click"/>
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                        </DataGrid>
                         
-                        <DockPanel Grid.Row="1" VerticalAlignment="Top">
-                            <GroupBox Header="Charts">
+                        <DockPanel Grid.Row="1" VerticalAlignment="Top" Name="btnsPanel">
+                            <Border Margin="3,10,3,0" CornerRadius="0" BorderBrush="SlateGray" BorderThickness="1" Padding="2,5,2,5">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
                                         <RowDefinition/>
+                                        <RowDefinition/>
                                     </Grid.RowDefinitions>
 
-                                    <Grid Grid.Row="0">
+                                    <TextBlock Grid.Row="0" Text="Charts" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               FontSize="16" FontWeight="Bold"/>
+
+                                    <Grid Grid.Row="1" Name="btnGrid">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition/>
                                             <ColumnDefinition/>
@@ -110,29 +148,43 @@
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
 
-                                            <Button Grid.Column="0" Name="Draw_salary_to_location_chart" 
+                                        <Button Name="btnAux"/>
+                                        <Button Grid.Column="0" Name="Draw_salary_to_location_chart" 
                                                 Content="Average salary per location" Click="DrawChart"/>
-                                            <Button Grid.Column="1" Name="Draw_salary_to_profession_chart" 
+                                        <Button Grid.Column="1" Name="Draw_salary_to_profession_chart" 
                                                 Content="Average salary per profession" Click="DrawChart"/>
-                                            <Button Grid.Column="2" Name="Draw_salary_to_gender_chart" 
+                                        <Button Grid.Column="2" Name="Draw_salary_to_gender_chart" 
                                                 Content="Average salary per gender" Click="DrawChart"/>
-                                            <Button Grid.Column="3" Name="Draw_age_to_profession_chart" 
+                                        <Button Grid.Column="3" Name="Draw_age_to_profession_chart" 
                                                 Content="Average age per profession" Click="DrawChart"/>
                                     </Grid>
 
-                                    <Button Grid.Row="1" Content="Clear" Click="DrawChart" Width="500"/>
+                                    <Button Grid.Row="2" Content="Clear" Click="DrawChart" Focusable="False" Width="250"/>
                                 </Grid>
-                            </GroupBox>
+                            </Border>
                         </DockPanel>
-                    
+
                         <lvc:CartesianChart Name="ColumnChart" Series="{Binding SeriesCollection}" Grid.Row="2"
-                                            LegendLocation="Left" Margin="10">
+                                            LegendLocation="Left" Margin="3,10,3,10">
                             <lvc:CartesianChart.AxisX>
-                                <lvc:Axis Labels="{Binding Labels}"></lvc:Axis>
+                                <lvc:Axis Labels="{Binding Labels}" FontSize="14"></lvc:Axis>
                             </lvc:CartesianChart.AxisX>
                             <lvc:CartesianChart.AxisY>
-                                <lvc:Axis Title="{Binding Title}" LabelFormatter="{Binding Formatter}"></lvc:Axis>
+                                <lvc:Axis Title="{Binding Title}" LabelFormatter="{Binding Formatter}" FontSize="14"></lvc:Axis>
                             </lvc:CartesianChart.AxisY>
+                            
+                            <lvc:CartesianChart.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Open..." Click="btnOpenFile_Click"/>
+                                    <MenuItem Header="Create..." Click="btnCreateFile_Click"/>
+                                    <Separator/>
+                                    <MenuItem Header="Chart color">
+                                        <MenuItem Header="Change color..." Click="Change_Chart_Fill_Click"/>
+                                        <MenuItem Header="Default color" Name="ChartDefaultColors" Click="SetDefaultColors_Click"/>
+                                    </MenuItem>
+                                    <MenuItem Header="Clear chart" Click="cmClearChart"/>
+                                </ContextMenu>
+                            </lvc:CartesianChart.ContextMenu>
                         </lvc:CartesianChart>
                     </Grid>
                 </TabItem.Content>

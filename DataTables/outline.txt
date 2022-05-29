@@ -1,1 +1,0 @@
-ID,sex,age,countryOfOrigin,profession,salary

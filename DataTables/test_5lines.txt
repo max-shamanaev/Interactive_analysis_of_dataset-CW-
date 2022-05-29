@@ -1,5 +1,0 @@
-1*male*35*China*cybersecurity specialist*7275,84
-2*female*58*Germany*IT analyst*7220,49
-3*male*41*France*cybersecurity specialist*3274,52
-4*female*28*Japan*cloud computing engineer*2052,5
-5*female*49*USA*database administrator*7161,93

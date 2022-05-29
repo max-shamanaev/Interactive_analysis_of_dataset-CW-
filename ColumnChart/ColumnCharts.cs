@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Data;
 using LiveCharts;
 using LiveCharts.Wpf;
@@ -17,14 +18,16 @@ namespace ColumnCharts
         public Func<double, string> Formatter { get; set; }
 
         public BasicColumn() { }
-        public BasicColumn(string _title, Dictionary<string, double> dict)
+        public BasicColumn(string _title, Dictionary<string, double> dict, Brush fillBrush)
         {
+
             SeriesCollection = new SeriesCollection
             {
                 new ColumnSeries
                 {
                     Title = _title,
-                    Values = new ChartValues<double>(dict.Values)
+                    Values = new ChartValues<double>(dict.Values),
+                    Fill = fillBrush,
                 }
             };
 
